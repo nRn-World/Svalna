@@ -137,6 +137,7 @@
             <section class="settings-card compact-card setting-row"><div class="setting-icon apricot"><svg><use href="#i-bell"/></svg></div><div><h2>Warn in advance</h2><p>Items turn yellow when they reach this threshold.</p></div><div class="range-control mini"><output id="warningOutput">3 days</output><input id="warningRange" type="range" min="2" max="7" step="1" value="3" aria-label="Warning threshold"></div></section>
             <section class="settings-card compact-card setting-row"><div class="setting-icon teal"><svg><use href="#i-bell"/></svg></div><div><h2>Notifications</h2><p id="notificationText">Allow notifications from the browser.</p></div><button class="secondary-button" id="notificationButton">Enable</button></section>
             <section class="settings-card compact-card setting-row"><div class="setting-icon sky"><svg><use href="#i-settings"/></svg></div><div><h2 id="languageHeading">Language</h2><p id="languageText">Choose the language used in Svalna.</p></div><select id="languageSelect" aria-label="Language"><option value="en">English</option><option value="sv">Svenska</option><option value="es">Español</option><option value="tr">Türkçe</option></select></section>
+<section class="settings-card compact-card setting-row"><div class="setting-icon sky"><svg><use href="#i-box"/></svg></div><div><h2 id="themeHeading">Theme</h2><p id="themeText">Choose light or dark appearance.</p></div><select id="themeSelect" aria-label="Theme"><option value="light">Light</option><option value="dark">Dark</option></select></section>
             <section class="settings-card data-card settings-columns"><div><p class="eyebrow">Offline & private</p><h2>Your data</h2><p>Everything stays on this device. Export a backup before changing phones.</p><div class="button-stack"><button class="secondary-button" id="exportData"><svg><use href="#i-share"/></svg>Export backup</button><label class="secondary-button file-button"><svg><use href="#i-upload"/></svg>Import backup<input id="settingsImport" type="file" accept="application/json" hidden></label><button class="danger-button" id="resetData"><svg><use href="#i-trash"/></svg>Reset demo data</button></div></div><div class="privacy-panel"><svg><use href="#i-shield"/></svg><p class="eyebrow">Offline & private</p><h2>Your food list never leaves your phone.</h2><p>Svalna uses no AI, analytics or account. Notifications while the app is fully closed cannot be guaranteed by every mobile browser.</p></div></section>
           </div>
         </div>
@@ -164,6 +165,6 @@
   <script src="assets/vendor/firebase-auth-compat.js"></script>
   <script src="assets/vendor/firebase-firestore-compat.js"></script>
   <script src="cloud-sync.js?v=2"></script>
-  <script src="app.js?v=16"></script>
+  <script src="app.js?v=17"></script>
 </body>
 </html>
