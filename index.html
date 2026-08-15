@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/icons/icon-180.png">
-  <link rel="stylesheet" href="styles.css?v=25">
+  <link rel="stylesheet" href="styles.css?v=27">
 </head>
 <body>
   <svg class="svg-defs" aria-hidden="true">
@@ -31,6 +31,9 @@
     <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 9a6 6 0 0 1 12 0c0 7 3 7 3 9H3c0-2 3-2 3-9M10 21h4"/></symbol>
     <symbol id="i-share" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.5 10.5 7-4M8.5 13.5l7 4"/></symbol>
     <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4 6v5c0 5.2 3.2 8.8 8 10 4.8-1.2 8-4.8 8-10V6z"/><path d="m8.5 12 2.2 2.2 4.8-5"/></symbol>
+    <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 16V10M11 16V6M15 16v-4M19 16V8"/></symbol>
+    <symbol id="i-magic" viewBox="0 0 24 24"><path d="m15 4-1 1M3 3l18 18M9.5 9.5 4 15l5 5 5.5-5.5M14.5 4.5 20 10l-3.5 3.5"/></symbol>
+    <symbol id="i-move" viewBox="0 0 24 24"><path d="M12 2v20M2 12h20M7 7 2 12l5 5M17 7l5 5-5 5"/></symbol>
   </svg>
 
   <div class="app-shell">
@@ -40,6 +43,7 @@
         <button class="nav-item active" data-view="home"><svg><use href="#i-home"/></svg><span>Home</span></button>
         <button class="nav-item" data-view="scan"><svg><use href="#i-scan"/></svg><span>Scan</span></button>
         <button class="nav-item" data-view="shopping"><svg><use href="#i-box"/></svg><span>List</span></button>
+        <button class="nav-item" data-view="stats"><svg><use href="#i-chart"/></svg><span>Stats</span></button>
         <button class="nav-item" data-view="settings"><svg><use href="#i-settings"/></svg><span>Settings</span></button>
       </div>
       <div class="privacy-stamp"><svg><use href="#i-shield"/></svg><p class="local-note">Stored safely on this device.</p></div>
@@ -95,7 +99,8 @@
         <header class="simple-header scan-header"><p class="eyebrow">Add to Svalna</p><h1 id="scanTitle">Scan an item</h1><p>Take a clear photo of the product or its date, then confirm the details yourself.</p></header>
         <div class="scan-layout">
           <section class="scanner-card" aria-label="Camera preview">
-            <img src="assets/photos/scan-milk.webp" alt="Plain milk carton in an open refrigerator">
+            <img id="scanPoster" src="assets/photos/scan-milk.webp" alt="Plain milk carton in an open refrigerator">
+            <video id="scanVideo" class="scan-video" playsinline muted hidden></video>
             <div class="scanner-shade"></div><div class="scan-frame" aria-hidden="true"><i></i><i></i><i></i><i></i><span></span></div>
             <div class="scan-caption"><span class="live-dot"></span><p><b>Ready for your photo</b><small>Align the product or expiry date</small></p></div>
           </section>
@@ -106,6 +111,8 @@
               <label class="capture-button"><span><svg><use href="#i-camera"/></svg></span><b>Camera</b><small>Take a new photo</small><input id="cameraInput" type="file" accept="image/*" capture="environment" hidden></label>
               <label class="capture-button"><span><svg><use href="#i-upload"/></svg></span><b>Gallery</b><small>Choose an existing image</small><input id="fileInput" type="file" accept="image/*" hidden></label>
             </div>
+            <button class="secondary-button wide barcode-button" id="barcodeButton" type="button"><svg><use href="#i-scan"/></svg><span>Scan barcode</span></button>
+            <p class="barcode-note" id="barcodeNote" hidden></p>
             <button class="secondary-button wide manual-button" data-add><svg><use href="#i-edit"/></svg>Enter details manually</button>
             <p class="honest-copy"><b>No automatic recognition.</b> Svalna works fully offline, so you always confirm the product name and date.</p>
           </section>
@@ -118,7 +125,11 @@
 
       <section id="shoppingView" class="view" aria-labelledby="shopTitle">
         <header class="simple-header"><p class="eyebrow">Shopping list</p><h1 id="shopTitle">Shopping list</h1><p>Things to pick up on your next trip — with smart suggestions from the fridge.</p></header>
-        <div class="shopping-layout">
+        <div class="shop-tabs" role="tablist" aria-label="Shopping list and meal plan">
+          <button class="shop-tab active" data-shop-tab="list" type="button">List</button>
+          <button class="shop-tab" data-shop-tab="plan" type="button">Meal plan</button>
+        </div>
+        <div id="shopListView" class="shopping-layout">
           <section class="shopping-card">
             <div class="section-heading"><div><h2 class="shop-suggest-head">From the fridge</h2></div><span id="shopTotal" class="item-total"></span></div>
             <div id="shopSuggest"></div>
@@ -127,6 +138,18 @@
             <div class="section-heading"><div><h2 class="shop-list-head">Shopping list</h2></div><button class="text-button" id="shopClear" hidden>Clear done</button></div>
             <div class="shop-add-row"><input id="shopAddName" placeholder="Add an item…" aria-label="Add an item"><button class="secondary-button" id="shopAddBtn" type="button">Add</button></div>
             <div id="shopRows"></div>
+          </section>
+        </div>
+        <div id="shopPlanView" class="shopping-layout" hidden>
+          <section class="shopping-card">
+            <div class="section-heading"><div><h2 class="plan-week-head">Plan your week</h2></div><span id="planTotal" class="item-total"></span></div>
+            <p class="plan-help" id="planHelp"></p>
+            <div id="planDays" class="plan-days"></div>
+            <div id="planRecipes" class="plan-recipes"></div>
+          </section>
+          <section class="shopping-card">
+            <div class="section-heading"><div><h2 class="plan-list-head">To buy for meals</h2></div><button class="text-button" id="planAddAll" hidden type="button">Add all to list</button></div>
+            <div id="planShopping" class="plan-shopping"></div>
           </section>
         </div>
       </section>
@@ -157,6 +180,11 @@
                 <button class="text-button leave-household" id="leaveHousehold" type="button">Disconnect this device</button>
               </div>
               <div hidden aria-hidden="true"><button id="shareHousehold" type="button"></button><input id="familyImport" type="file" accept="application/json"></div>
+              <label class="actor-field"><span class="sr-only">Your name</span><input id="actorInput" maxlength="20" autocomplete="off" placeholder="Your name"></label>
+            </section>
+            <section class="settings-card activity-card">
+              <div class="card-title"><span class="setting-icon teal"><svg><use href="#i-family"/></svg></span><div><p class="eyebrow">Household activity</p><h2>Recent activity</h2><p>Who added, used or threw away what.</p></div></div>
+              <div id="activityList" class="activity-list"></div>
             </section>
           </div>
           <div class="settings-side">
@@ -169,9 +197,48 @@
           </div>
         </div>
       </section>
+
+      <!-- Stats view -->
+      <section id="statsView" class="view" aria-labelledby="statsTitle">
+        <header class="simple-header">
+          <p class="eyebrow" id="statsEyebrow">Food waste overview</p>
+          <h1 id="statsTitle">Statistics</h1>
+          <p id="statsLead">Track what you use and what gets wasted each week.</p>
+        </header>
+        <div class="stats-layout">
+          <section class="stats-panel-card">
+            <div class="section-heading">
+              <div><p class="eyebrow" id="statsRangeLabel">Last 8 weeks</p><h2 id="statsChartTitle">Used vs. wasted</h2></div>
+              <div class="stats-period-toggle">
+                <button class="filter active" data-period="weeks" id="statsPeriodWeeks">Weeks</button>
+                <button class="filter" data-period="months" id="statsPeriodMonths">Months</button>
+              </div>
+            </div>
+            <div class="chart-wrap" id="statsChartWrap" aria-label="Bar chart of used vs wasted items">
+              <svg id="statsChart" class="stats-chart" role="img" aria-label="Statistics chart"></svg>
+              <div class="chart-legend">
+                <span class="legend-dot used"></span><span id="statsLegendUsed">Used</span>
+                <span class="legend-dot wasted"></span><span id="statsLegendWasted">Wasted</span>
+              </div>
+            </div>
+          </section>
+          <section class="stats-panel-card">
+            <div class="section-heading"><div><p class="eyebrow" id="statsCatEyebrow">By category</p><h2 id="statsCatTitle">Most wasted</h2></div></div>
+            <div id="statsCategoryList" class="stats-category-list"></div>
+          </section>
+          <section class="stats-panel-card stats-summary-card">
+            <p class="eyebrow" id="statsTotalEyebrow">All time</p>
+            <div class="stats-summary-grid">
+              <div><b id="statsTotalUsed">0</b><span id="statsTotalUsedLabel">items used</span></div>
+              <div><b id="statsTotalWasted">0</b><span id="statsTotalWastedLabel">items wasted</span></div>
+              <div><b id="statsSaveRate">—</b><span id="statsSaveRateLabel">save rate</span></div>
+            </div>
+          </section>
+        </div>
+      </section>
     </main>
 
-    <nav class="bottom-nav" aria-label="Primary navigation"><button class="nav-item active" data-view="home"><svg><use href="#i-home"/></svg><span>Home</span></button><button class="nav-item scan-tab" data-view="scan"><div class="scan-tab-icon"><svg><use href="#i-scan"/></svg></div><span>Scan</span></button><button class="nav-item" data-view="shopping"><svg><use href="#i-box"/></svg><span>List</span></button><button class="nav-item" data-view="settings"><svg><use href="#i-settings"/></svg><span>Settings</span></button></nav>
+    <nav class="bottom-nav" aria-label="Primary navigation"><button class="nav-item active" data-view="home"><svg><use href="#i-home"/></svg><span>Home</span></button><button class="nav-item scan-tab" data-view="scan"><div class="scan-tab-icon"><svg><use href="#i-scan"/></svg></div><span>Scan</span></button><button class="nav-item" data-view="shopping"><svg><use href="#i-box"/></svg><span>List</span></button><button class="nav-item" data-view="stats"><svg><use href="#i-chart"/></svg><span>Stats</span></button><button class="nav-item" data-view="settings"><svg><use href="#i-settings"/></svg><span>Settings</span></button></nav>
   </div>
 
   <dialog id="itemDialog" class="sheet"><form method="dialog" class="sheet-card" id="itemForm"><header><div><p class="eyebrow" id="formEyebrow">New in the fridge</p><h2 id="formTitle">Add item</h2></div><button class="icon-button" value="cancel" aria-label="Close"><svg><use href="#i-close"/></svg></button></header>
@@ -180,7 +247,7 @@
     <div class="date-photo-note"><svg><use href="#i-camera"/></svg><p><b>Photographing the date?</b> The image is stored locally. Enter the date below — Svalna does not claim to read it automatically.</p></div>
     <div class="form-grid"><label><span>Name</span><input id="itemName" required placeholder="For example cherry tomatoes"></label><label><span>Category</span><select id="itemCategory"><option>Vegetables</option><option>Fruit & berries</option><option>Dairy & eggs</option><option>Drinks</option><option>Sauces</option><option>Leftovers</option><option>Other</option></select></label><label><span>Quantity</span><input id="itemQuantity" placeholder="For example 6"></label><label><span id="locationLabel">Storage location</span><select id="itemLocation"><option value="top">Top shelf</option><option value="middle">Middle shelf</option><option value="door">Fridge door</option><option value="crisper">Crisper drawer</option></select></label><label><span>Added / purchased</span><input id="addedDate" type="date" required></label></div>
     <fieldset><legend>How should we calculate?</legend><div class="segmented"><label><input type="radio" name="dateMode" value="printed" checked><span>Printed best-before</span></label><label><input type="radio" name="dateMode" value="estimated"><span>Estimate shelf life</span></label><label><input type="radio" name="dateMode" value="unknown"><span>I don't know</span></label></div></fieldset>
-    <div id="printedFields"><label><span>Best before</span><input id="expiryDate" type="date"></label></div>
+    <div id="printedFields"><label><span>Best before</span><input id="expiryDate" type="date"></label><button type="button" class="secondary-button ocr-date-button" id="ocrDateBtn"><svg><use href="#i-magic"/></svg><span id="ocrDateLabel">Read date from photo</span></button><div id="ocrStatus" class="ocr-status" hidden></div></div>
     <div id="estimatedFields" hidden><label><span>Fresh produce type</span><select id="produceType"><option value="tomato">Tomato</option><option value="berries">Berries / strawberries</option><option value="leafy">Leafy greens / salad</option><option value="broccoli">Broccoli</option><option value="cucumber">Cucumber</option><option value="pepper">Pepper</option><option value="apple">Apple</option><option value="citrus">Citrus</option><option value="carrot">Carrot</option><option value="general">Other fruit or vegetable</option></select></label><div class="estimate-box" id="estimateText"></div></div>
     <div id="unknownFields" hidden><p class="unknown-note" id="unknownText"></p></div>
     <footer><button class="secondary-button" value="cancel">Cancel</button><button class="primary-button" type="submit" value="default"><svg><use href="#i-check"/></svg>Save item</button></footer>
@@ -188,16 +255,75 @@
 
   <dialog id="detailDialog" class="sheet"><article class="sheet-card detail-card"><header><div><p class="eyebrow">In your fridge</p><h2 id="detailTitle"></h2></div><button class="icon-button" data-close-detail aria-label="Close"><svg><use href="#i-close"/></svg></button></header><div id="detailContent"></div><footer><button class="text-button" id="shopFromDetail"><svg><use href="#i-box"/></svg>To list</button><button class="danger-button" id="deleteItem"><svg><use href="#i-trash"/></svg>Remove</button><button class="secondary-button" id="editItem"><svg><use href="#i-edit"/></svg>Edit</button><button class="primary-button" id="consumeItem"><svg><use href="#i-check"/></svg>Mark used</button></footer></article></dialog>
   <dialog id="confirmDialog" class="confirm-dialog"><form method="dialog"><div class="confirm-icon"><svg><use href="#i-trash"/></svg></div><h2>Reset everything?</h2><p>Your items and settings will be replaced with demo data. This cannot be undone.</p><div><button value="cancel" class="secondary-button">Keep my data</button><button value="confirm" class="danger-button">Yes, reset</button></div></form></dialog>
+  <dialog id="onboardingDialog" class="onboarding">
+    <div class="onboard-card">
+      <div class="onboard-steps">
+        <div class="onboard-step active" data-step="0">
+          <div class="onboard-brand"><span class="brand-mark"><img src="assets/icons/brand-192.png?v=39" alt=""></span></div>
+          <h2 id="onbWelcome">Welcome to Svalna</h2>
+          <p id="onbLead">Let's set up your fridge so dates and reminders feel right.</p>
+        </div>
+        <div class="onboard-step" data-step="1">
+          <p class="eyebrow" id="onbStep1">Step 1 of 4</p>
+          <h2 id="onbLangTitle">Language</h2>
+          <p class="onb-help" id="onbLangHelp"></p>
+          <div class="onboard-langs">
+            <button type="button" data-lang="en">English</button>
+            <button type="button" data-lang="sv">Svenska</button>
+            <button type="button" data-lang="es">Español</button>
+            <button type="button" data-lang="tr">Türkçe</button>
+          </div>
+        </div>
+        <div class="onboard-step" data-step="2">
+          <p class="eyebrow" id="onbStep2">Step 2 of 4</p>
+          <h2 id="onbTempTitle">Fridge temperature</h2>
+          <p class="onb-help" id="onbTempHelp"></p>
+          <div class="range-control"><input id="onbTempRange" type="range" min="2" max="10" step="1" value="4" aria-label="Fridge temperature"><output id="onbTempOut">4°C</output></div>
+        </div>
+        <div class="onboard-step" data-step="3">
+          <p class="eyebrow" id="onbStep3">Step 3 of 4</p>
+          <h2 id="onbWarnTitle">Warn in advance</h2>
+          <p class="onb-help" id="onbWarnHelp"></p>
+          <div class="range-control"><input id="onbWarnRange" type="range" min="2" max="7" step="1" value="3" aria-label="Warning threshold"><output id="onbWarnOut">3 days</output></div>
+        </div>
+        <div class="onboard-step" data-step="4">
+          <p class="eyebrow" id="onbStep4">Step 4 of 4</p>
+          <h2 id="onbNotifyTitle">Notifications</h2>
+          <p class="onb-help" id="onbNotifyHelp"></p>
+          <label class="onboard-toggle"><input type="checkbox" id="onbNotify"><span id="onbNotifyLabel">Enable reminders</span></label>
+        </div>
+      </div>
+      <footer class="onboard-footer">
+        <button class="text-button" id="onbBack" type="button" hidden>Back</button>
+        <button class="primary-button" id="onbNext" type="button">Next</button>
+        <button class="primary-button" id="onbStart" type="button" hidden>Get started</button>
+      </footer>
+    </div>
+  </dialog>
   <div id="installBanner" class="install-banner" hidden>
     <div class="install-banner-icon"><svg><use href="#i-home"/></svg></div>
     <div class="install-banner-copy"><h3>Install Svalna as an app</h3><p>Add Svalna to your home screen — it works offline and opens like a real app.</p><span class="ios-install-hint" id="iosBannerHint" hidden></span></div>
     <div class="install-banner-actions"><button class="primary-button" id="installBtn" type="button">Install</button><button class="text-button" id="installLater" type="button">Not now</button></div>
   </div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <!-- Drag-to-move location overlay -->
+  <div id="dragOverlay" class="drag-overlay" hidden aria-hidden="true">
+    <div class="drag-overlay-inner">
+      <p class="eyebrow" id="dragOverlayLabel">Move to shelf</p>
+      <div class="drag-zones">
+        <div class="drag-zone" data-loc="top" id="dzTop"><svg><use href="#i-move"/></svg><span id="dzTopLabel">Top shelf</span></div>
+        <div class="drag-zone" data-loc="middle" id="dzMiddle"><svg><use href="#i-move"/></svg><span id="dzMiddleLabel">Middle shelf</span></div>
+        <div class="drag-zone" data-loc="door" id="dzDoor"><svg><use href="#i-move"/></svg><span id="dzDoorLabel">Fridge door</span></div>
+        <div class="drag-zone" data-loc="crisper" id="dzCrisper"><svg><use href="#i-move"/></svg><span id="dzCrisperLabel">Crisper drawer</span></div>
+      </div>
+      <button class="text-button" id="dragCancel">Cancel</button>
+    </div>
+  </div>
   <script src="assets/vendor/firebase-app-compat.js"></script>
   <script src="assets/vendor/firebase-auth-compat.js"></script>
   <script src="assets/vendor/firebase-firestore-compat.js"></script>
-  <script src="cloud-sync.js?v=5"></script>
-  <script src="app.js?v=26"></script>
+  <script src="assets/vendor/zxing.js"></script>
+  <script src="cloud-sync.js?v=7"></script>
+  <script src="app.js?v=29"></script>
 </body>
 </html>

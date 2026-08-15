@@ -83,6 +83,9 @@
       temperature: Number(state.settings?.temperature ?? 4),
       warning: Number(state.settings?.warning ?? 3),
       items: (state.items || []).map(safeItem),
+      shopping: (state.shopping || []),
+      activity: (state.activity || []).slice(0, 100),
+      mealPlan: (state.mealPlan || []).slice(0, 80),
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     };
   }
