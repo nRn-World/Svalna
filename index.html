@@ -8,7 +8,7 @@
   <title>Svalna</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=21">
+  <link rel="stylesheet" href="styles.css?v=22">
 </head>
 <body>
   <svg class="svg-defs" aria-hidden="true">
@@ -152,9 +152,10 @@
     <div class="photo-picker"><div id="photoPreview" class="photo-preview"><svg><use href="#i-camera"/></svg><span>A photo makes it easy to find</span></div><div><label class="secondary-button file-button" for="cameraInput"><svg><use href="#i-camera"/></svg>Take photo</label><label class="text-button file-button" for="fileInput">Choose image</label></div></div>
     <div class="date-photo-note"><svg><use href="#i-camera"/></svg><p><b>Photographing the date?</b> The image is stored locally. Enter the date below — Svalna does not claim to read it automatically.</p></div>
     <div class="form-grid"><label><span>Name</span><input id="itemName" required placeholder="For example cherry tomatoes"></label><label><span>Category</span><select id="itemCategory"><option>Vegetables</option><option>Fruit & berries</option><option>Dairy & eggs</option><option>Drinks</option><option>Sauces</option><option>Leftovers</option><option>Other</option></select></label><label><span>Quantity</span><input id="itemQuantity" placeholder="For example 6"></label><label><span id="locationLabel">Storage location</span><select id="itemLocation"><option value="top">Top shelf</option><option value="middle">Middle shelf</option><option value="door">Fridge door</option><option value="crisper">Crisper drawer</option></select></label><label><span>Added / purchased</span><input id="addedDate" type="date" required></label></div>
-    <fieldset><legend>How should we calculate?</legend><div class="segmented"><label><input type="radio" name="dateMode" value="printed" checked><span>Printed best-before</span></label><label><input type="radio" name="dateMode" value="estimated"><span>Estimate shelf life</span></label></div></fieldset>
+    <fieldset><legend>How should we calculate?</legend><div class="segmented"><label><input type="radio" name="dateMode" value="printed" checked><span>Printed best-before</span></label><label><input type="radio" name="dateMode" value="estimated"><span>Estimate shelf life</span></label><label><input type="radio" name="dateMode" value="unknown"><span>I don't know</span></label></div></fieldset>
     <div id="printedFields"><label><span>Best before</span><input id="expiryDate" type="date"></label></div>
     <div id="estimatedFields" hidden><label><span>Fresh produce type</span><select id="produceType"><option value="tomato">Tomato</option><option value="berries">Berries / strawberries</option><option value="leafy">Leafy greens / salad</option><option value="broccoli">Broccoli</option><option value="cucumber">Cucumber</option><option value="pepper">Pepper</option><option value="apple">Apple</option><option value="citrus">Citrus</option><option value="carrot">Carrot</option><option value="general">Other fruit or vegetable</option></select></label><div class="estimate-box" id="estimateText"></div></div>
+    <div id="unknownFields" hidden><p class="unknown-note" id="unknownText"></p></div>
     <footer><button class="secondary-button" value="cancel">Cancel</button><button class="primary-button" type="submit" value="default"><svg><use href="#i-check"/></svg>Save item</button></footer>
   </form></dialog>
 
@@ -165,6 +166,6 @@
   <script src="assets/vendor/firebase-auth-compat.js"></script>
   <script src="assets/vendor/firebase-firestore-compat.js"></script>
   <script src="cloud-sync.js?v=2"></script>
-  <script src="app.js?v=19"></script>
+  <script src="app.js?v=20"></script>
 </body>
 </html>
