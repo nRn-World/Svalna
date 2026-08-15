@@ -139,6 +139,7 @@
       applyingRemote = true;
       await bridge.applyRemote(snapshot.data());
       applyingRemote = false;
+      if ((bridge.snapshot()?.dirty || []).length) queueState();
       setStatus(snapshot.metadata.fromCache ? 'offline' : 'online', snapshot.metadata.fromCache ? words().offline : words().synced);
       renderConnection();
     }, error => {
@@ -209,12 +210,14 @@
     }
   }
 
-  function queueState(state) {
+  function queueState() {
     if (!firebaseReady || !householdCode || applyingRemote) return;
     clearTimeout(writeTimer);
     writeTimer = setTimeout(async () => {
       try {
-        await db.collection('households').doc(householdCode).set(remotePayload(state), { merge: true });
+        const current = bridge.snapshot();
+        bridge.markPending?.(current);
+        await db.collection('households').doc(householdCode).set(remotePayload(current), { merge: true });
       } catch (error) {
         console.error('Queue household update:', error);
         setStatus(navigator.onLine ? 'error' : 'offline', navigator.onLine ? words().error : words().offline);
@@ -241,7 +244,7 @@
       const credential = await firebase.auth().signInAnonymously();
       user = credential.user;
       firebaseReady = true;
-      const savedCode = normalizeCode(bridge.snapshot().household?.cloud ? bridge.snapshot().household.code : '');
+      const savedCode = savedHouseholdCode();
       if (savedCode) await attach(savedCode, true);
       else renderConnection();
     } catch (error) {
@@ -251,6 +254,16 @@
     }
   }
 
+  function savedHouseholdCode() {
+    return normalizeCode(bridge.snapshot().household?.cloud ? bridge.snapshot().household.code : '');
+  }
+
+  function ensureAttached() {
+    if (unsubscribe || !firebaseReady) return;
+    const code = savedHouseholdCode();
+    if (code) attach(code, true).catch(error => console.error('Re-attach household:', error));
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     $('#createHousehold')?.addEventListener('click', createHousehold);
     $('#joinHousehold')?.addEventListener('click', joinHousehold);
@@ -258,8 +271,9 @@
       if (event.key === 'Enter') joinHousehold();
     });
     $('#leaveHousehold')?.addEventListener('click', disconnect);
-    window.addEventListener('online', renderConnection);
+    window.addEventListener('online', () => { renderConnection(); ensureAttached(); });
     window.addEventListener('offline', renderConnection);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) ensureAttached(); });
   });
 
   window.SvalnaCloud = { init, queueState, applyLanguage };
