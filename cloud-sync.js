@@ -15,25 +15,25 @@
       local: 'Local only', connecting: 'Connecting…', synced: 'Live sync active', offline: 'Offline — changes are queued', error: 'Could not connect',
       create: 'Create household', join: 'Join household', placeholder: 'Enter household code', joining: 'Joining…', created: 'Household created', joined: 'Household joined',
       invalid: 'Check the household code', missing: 'No household was found for that code', leave: 'Disconnect this device', live: 'Everyone using this code sees the same fridge automatically.',
-      codeHelp: 'Share this private code with family members. It gives access to your shared fridge.', lead: 'Create a shared household or enter the private code from another family member.', liveTitle: 'Live sync.', data: 'A local copy stays on this device. Household items and settings sync when live sync is active.', privacyTitle: 'Your photos stay on your phone.', privacy: 'Svalna uses no AI, analytics or personal account. Shared item details sync securely through your private household code; product photos remain local.'
+      codeHelp: 'Share this private code with family members. It gives access to your shared fridge.', lead: 'Create a shared household or enter the private code from another family member.', liveTitle: 'Live sync.', data: 'A local copy stays on this device. Household items and settings sync when live sync is active.', privacyTitle: 'Photos sync within your household.', privacy: 'Svalna uses no AI, analytics or personal account. Item details and product photos sync securely through your private household code.'
     },
     sv: {
       local: 'Endast lokalt', connecting: 'Ansluter…', synced: 'Live-synk är aktiv', offline: 'Offline – ändringar köas', error: 'Kunde inte ansluta',
       create: 'Skapa hushåll', join: 'Anslut till hushåll', placeholder: 'Skriv hushållskoden', joining: 'Ansluter…', created: 'Hushållet skapades', joined: 'Ansluten till hushållet',
       invalid: 'Kontrollera hushållskoden', missing: 'Inget hushåll hittades med den koden', leave: 'Koppla från den här enheten', live: 'Alla som använder koden ser samma kyl automatiskt.',
-      codeHelp: 'Dela den privata koden med familjen. Koden ger tillgång till ert gemensamma kylskåp.', lead: 'Skapa ett gemensamt hushåll eller skriv den privata koden från en familjemedlem.', liveTitle: 'Live-synk.', data: 'En lokal kopia finns kvar på enheten. Hushållets varor och inställningar synkas när live-synk är aktiv.', privacyTitle: 'Dina bilder stannar i mobilen.', privacy: 'Svalna använder ingen AI, analys eller personligt konto. Delade varuuppgifter synkas säkert via den privata hushållskoden; produktbilder stannar lokalt.'
+      codeHelp: 'Dela den privata koden med familjen. Koden ger tillgång till ert gemensamma kylskåp.', lead: 'Skapa ett gemensamt hushåll eller skriv den privata koden från en familjemedlem.', liveTitle: 'Live-synk.', data: 'En lokal kopia finns kvar på enheten. Hushållets varor och inställningar synkas när live-synk är aktiv.', privacyTitle: 'Bilder synkas inom hushållet.', privacy: 'Svalna använder ingen AI, analys eller personligt konto. Varuuppgifter och produktbilder synkas säkert via den privata hushållskoden.'
     },
     es: {
       local: 'Solo local', connecting: 'Conectando…', synced: 'Sincronización activa', offline: 'Sin conexión; los cambios están en cola', error: 'No se pudo conectar',
       create: 'Crear hogar', join: 'Unirse al hogar', placeholder: 'Introduce el código del hogar', joining: 'Uniéndose…', created: 'Hogar creado', joined: 'Te has unido al hogar',
       invalid: 'Revisa el código del hogar', missing: 'No se encontró ningún hogar con ese código', leave: 'Desconectar este dispositivo', live: 'Todos los que usan este código ven la misma nevera automáticamente.',
-      codeHelp: 'Comparte este código privado con tu familia. Da acceso a la nevera compartida.', lead: 'Crea un hogar compartido o introduce el código privado de otro familiar.', liveTitle: 'Sincronización en directo.', data: 'Una copia local permanece en este dispositivo. Los productos y ajustes del hogar se sincronizan cuando la sincronización está activa.', privacyTitle: 'Tus fotos permanecen en el teléfono.', privacy: 'Svalna no usa IA, analítica ni una cuenta personal. Los datos compartidos se sincronizan mediante el código privado; las fotos permanecen locales.'
+      codeHelp: 'Comparte este código privado con tu familia. Da acceso a la nevera compartida.', lead: 'Crea un hogar compartido o introduce el código privado de otro familiar.', liveTitle: 'Sincronización en directo.', data: 'Una copia local permanece en este dispositivo. Los productos y ajustes del hogar se sincronizan cuando la sincronización está activa.', privacyTitle: 'Las fotos se sincronizan dentro del hogar.', privacy: 'Svalna no usa IA, analítica ni una cuenta personal. Los datos compartidos y las fotos se sincronizan de forma segura mediante el código privado del hogar.'
     },
     tr: {
       local: 'Yalnızca yerel', connecting: 'Bağlanıyor…', synced: 'Canlı eşitleme etkin', offline: 'Çevrimdışı — değişiklikler sırada', error: 'Bağlanılamadı',
       create: 'Hane oluştur', join: 'Haneye katıl', placeholder: 'Hane kodunu gir', joining: 'Katılıyor…', created: 'Hane oluşturuldu', joined: 'Haneye katıldın',
       invalid: 'Hane kodunu kontrol et', missing: 'Bu kodla bir hane bulunamadı', leave: 'Bu cihazın bağlantısını kes', live: 'Bu kodu kullanan herkes aynı buzdolabını otomatik olarak görür.',
-      codeHelp: 'Bu özel kodu ailenle paylaş. Kod, ortak buzdolabına erişim sağlar.', lead: 'Ortak bir hane oluştur veya bir aile üyesinin özel kodunu gir.', liveTitle: 'Canlı eşitleme.', data: 'Yerel bir kopya bu cihazda kalır. Canlı eşitleme açıkken hane ürünleri ve ayarları eşitlenir.', privacyTitle: 'Fotoğrafların telefonunda kalır.', privacy: 'Svalna yapay zekâ, analiz veya kişisel hesap kullanmaz. Paylaşılan ürün bilgileri özel hane koduyla eşitlenir; fotoğraflar yerel kalır.'
+      codeHelp: 'Bu özel kodu ailenle paylaş. Kod, ortak buzdolabına erişim sağlar.', lead: 'Ortak bir hane oluştur veya bir aile üyesinin özel kodunu gir.', liveTitle: 'Canlı eşitleme.', data: 'Yerel bir kopya bu cihazda kalır. Canlı eşitleme açıkken hane ürünleri ve ayarları eşitlenir.', privacyTitle: 'Fotoğraflar hane içinde eşitlenir.', privacy: 'Svalna yapay zekâ, analiz veya kişisel hesap kullanmaz. Ürün bilgileri ve fotoğraflar özel hane koduyla güvenli şekilde eşitlenir.'
     }
   };
 
@@ -72,7 +72,7 @@
 
   function safeItem(item) {
     const clean = JSON.parse(JSON.stringify(item));
-    if (clean.photo && clean.photo.startsWith('data:')) clean.photo = '';
+    if (clean.photo && clean.photo.length > 700000) clean.photo = '';
     return clean;
   }
 
@@ -217,7 +217,11 @@
       try {
         const current = bridge.snapshot();
         bridge.markPending?.(current);
-        await db.collection('households').doc(householdCode).set(remotePayload(current), { merge: true });
+        const payload = remotePayload(current);
+        if (JSON.stringify(payload).length > 900000) {
+          payload.items = (current.items || []).map(item => ({ ...safeItem(item), photo: '' }));
+        }
+        await db.collection('households').doc(householdCode).set(payload, { merge: true });
       } catch (error) {
         console.error('Queue household update:', error);
         setStatus(navigator.onLine ? 'error' : 'offline', navigator.onLine ? words().error : words().offline);
