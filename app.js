@@ -222,7 +222,8 @@ async function startBarcodeScan(){
     await video.play();
     scanning=true;
     setScanCaption('alignBarcode');
-    btn('#barcodeButton',nt('scanStop'));
+    // Update big barcode button to "Stop scanning" state
+    setBarcodeButtonState('scanning');
     const note=$('#barcodeNote');
     if(note){note.hidden=false;note.textContent=nt('scanStatus')}
     scanLoop();
@@ -230,7 +231,34 @@ async function startBarcodeScan(){
     toast(nt('cameraDenied'));
   }
 }
-function stopBarcodeScan(){scanning=false;clearTimeout(scanTimer);if(scanStream){try{scanStream.getTracks().forEach(t=>t.stop())}catch(e){}scanStream=null}const video=$('#scanVideo'),poster=$('#scanPoster');if(video){video.hidden=true;video.srcObject=null}if(poster)poster.hidden=false;const note=$('#barcodeNote');if(note)note.hidden=true;btn('#barcodeButton',nt('scanBarcode'));setScanCaption('ready')}
+function stopBarcodeScan(){
+  scanning=false;
+  clearTimeout(scanTimer);
+  if(scanStream){try{scanStream.getTracks().forEach(t=>t.stop())}catch(e){}scanStream=null}
+  const video=$('#scanVideo'),poster=$('#scanPoster');
+  if(video){video.hidden=true;video.srcObject=null}
+  if(poster)poster.hidden=false;
+  const note=$('#barcodeNote');
+  if(note)note.hidden=true;
+  setBarcodeButtonState('idle');
+  setScanCaption('ready');
+}
+function setBarcodeButtonState(mode){
+  const label=$('#barcodeBtnLabel'), sub=$('#barcodeBtnSub'), btn=$('#barcodeButton');
+  if(!btn)return;
+  if(mode==='scanning'){
+    btn.classList.add('barcode-scanning');
+    if(label)label.textContent=nt('scanStop');
+    if(sub)sub.textContent=nt('scanLooking');
+  } else {
+    btn.classList.remove('barcode-scanning');
+    if(label)label.textContent=nt('scanBarcode');
+    if(sub){
+      const subMap={en:'Point camera at the barcode — auto-detects name & date',sv:'Rikta kameran mot streckkoden — känner igen namn och datum automatiskt',es:'Apunta la cámara al código de barras — detecta nombre y fecha automáticamente',tr:'Kamerayı barkoda tut — adı ve tarihi otomatik algılar'};
+      sub.textContent=subMap[state?.settings?.language]||subMap.en;
+    }
+  }
+}
 function scanLoop(){
   if(!scanning)return;
   (async()=>{
@@ -326,7 +354,23 @@ function bindPlan(){$$('#planDays [data-plan-day]').forEach(b=>b.onclick=()=>{pl
 function renderPlan(){const view=$('#shopPlanView');if(!view||!state)return;const L=state.settings.language;const start=new Date();start.setHours(12,0,0,0);const days=[];for(let i=0;i<MEAL_DAYS;i++){days.push(new Date(start.getTime()+i*DAY))}const date=iso(days[planDay]||start);const planned=(state.mealPlan||[]).filter(m=>m.date===date);const dayEl=$('#planDays');if(dayEl)dayEl.innerHTML=days.map((d,i)=>`<button type="button" class="plan-day${i===planDay?' active':''}" data-plan-day="${i}"><b>${i===0?esc(t('today')):esc(new Intl.DateTimeFormat(locale[L],{weekday:'short'}).format(d))}</b><small>${esc(new Intl.DateTimeFormat(locale[L],{day:'numeric',month:'short'}).format(d))}</small></button>`).join('');const recEl=$('#planRecipes');if(recEl){const sel=`<select id="planRecipeSelect" aria-label="${esc(nt('planRecipe'))}">${RECIPES.map((r,i)=>`<option value="${i}">${esc(r.n[L]||r.n.en)}</option>`).join('')}</select>`;recEl.innerHTML=`<div class="plan-add-row">${sel}<label class="plan-servings"><input id="planServings" type="number" min="1" max="12" value="2" aria-label="${esc(nt('planServings'))}"> ${esc(nt('planServings'))}</label><button type="button" class="primary-button" id="planAddRecipe">${esc(nt('planAdd'))}</button></div>`+(planned.length?planned.map(m=>{const r=RECIPES[m.recipeId];return `<div class="plan-meal"><div><b>${esc(r?r.n[L]||r.n.en:'?')}</b><small>${m.servings} ${esc(nt('planServings'))} · ${esc(dateText(m.date))}</small></div><button type="button" class="shop-del" data-plan-remove="${m.id}" aria-label="${esc(t('remove'))}"><svg><use href="#i-trash"/></svg></button></div>`}).join(''):`<p class="shop-empty">${esc(nt('planEmpty'))}</p>`)}const {meals,rows}=aggPlan();const inList=new Set((state.shopping||[]).map(x=>x.name));const shopEl=$('#planShopping');if(shopEl)shopEl.innerHTML=rows.length?rows.map(x=>{const lbl=ingLabel(x.w);return `<div class="shop-suggest"><div><b>${esc(lbl)}</b><small>${esc(x.q)}${x.inFridge?' · '+esc(nt('planInFridge')):''}${inList.has(lbl)?' · '+esc(nt('planOnList')):''}</small></div>${x.inFridge||inList.has(lbl)?'<span class="plan-check"><svg><use href="#i-check"/></svg></span>':`<button type="button" class="shop-add" data-plan-buy="${esc(x.w)}" data-plan-q="${esc(x.q)}" aria-label="${esc(lbl)}"><svg><use href="#i-plus"/></svg></button>`}</div>`}).join(''):`<p class="shop-empty">${esc(nt('planToBuyEmpty'))}</p>`;const totalEl=$('#planTotal');if(totalEl)totalEl.textContent=meals.length?`${meals.length} ${meals.length===1?esc(nt('meal')):esc(nt('meals'))}`:'';const allBtn=$('#planAddAll');if(allBtn)allBtn.hidden=!rows.some(x=>!x.inFridge&&!inList.has(ingLabel(x.w)));bindPlan()}
 function swNotify(body,tag){try{const opts={body,icon:'assets/icon.svg',tag};if('serviceWorker'in navigator){navigator.serviceWorker.ready.then(r=>r.showNotification('Svalna',opts)).catch(()=>{try{new Notification('Svalna',opts)}catch(e){}})}else{new Notification('Svalna',opts)}}catch(e){}}
 async function checkDailySummary(){if(!state||!('Notification'in window)||Notification.permission!=='granted'||!state.settings.notify)return;const today=iso(new Date());if((state.notified||{}).daily===today)return;const w=state.settings.warning||3;const due=state.items.filter(x=>x.expiry&&daysLeft(x)<=w).sort((a,b)=>daysLeft(a)-daysLeft(b));if(!due.length)return;const near=due.filter(x=>daysLeft(x)>=0),exp=due.filter(x=>daysLeft(x)<0);let body='';if(near.length)body=nt('dailyBody')+' '+near.slice(0,4).map(x=>x.name).join(', ');else if(exp.length)body=nt('dailyExpired')+' '+exp.slice(0,4).map(x=>x.name).join(', ');if(!body)return;swNotify(body,'svalna-daily');(state.notified=state.notified||{}).daily=today;suppressCloudSave=true;try{await save()}finally{suppressCloudSave=false}}
-function updateScanUI(){if(!state)return;const note=$('#barcodeNote');if(note&&!note.hidden)note.textContent=nt('scanStatus');if(!scanning)btn('#barcodeButton',nt('scanBarcode'))}
+function updateScanUI(){
+  if(!state)return;
+  const note=$('#barcodeNote');
+  if(note&&!note.hidden)note.textContent=nt('scanStatus');
+  setBarcodeButtonState(scanning?'scanning':'idle');
+  // Update other static scan labels
+  const orMap={en:'or add without barcode',sv:'eller lägg till utan streckkod',es:'o añadir sin código de barras',tr:'ya da barkod olmadan ekle'};
+  txt('#scanOrLabel',orMap[state.settings.language]||orMap.en);
+  const camMap={en:'Camera',sv:'Kamera',es:'Cámara',tr:'Kamera'};
+  const galMap={en:'Gallery',sv:'Galleri',es:'Galería',tr:'Galeri'};
+  const camSubMap={en:'Take a photo',sv:'Ta en bild',es:'Hacer una foto',tr:'Fotoğraf çek'};
+  const galSubMap={en:'Choose an image',sv:'Välj en bild',es:'Elegir una imagen',tr:'Görsel seç'};
+  txt('#captureCamLabel',camMap[state.settings.language]||camMap.en);
+  txt('#captureGalLabel',galMap[state.settings.language]||galMap.en);
+  txt('#captureCamSub',camSubMap[state.settings.language]||camSubMap.en);
+  txt('#captureGalSub',galSubMap[state.settings.language]||galSubMap.en);
+}
 function updateOnboardText(){if(!state)return;const step=i=>nt('onbStep').replace('%d',String(i)).replace('%d','4');txt('#onbWelcome',nt('onbWelcome'));txt('#onbLead',nt('onbLead'));txt('#onbLangTitle',nt('onbLangTitle'));txt('#onbLangHelp',nt('onbLangHelp'));txt('#onbTempTitle',nt('onbTempTitle'));txt('#onbTempHelp',nt('onbTempHelp'));txt('#onbWarnTitle',nt('onbWarnTitle'));txt('#onbWarnHelp',nt('onbWarnHelp'));txt('#onbNotifyTitle',nt('onbNotifyTitle'));txt('#onbNotifyHelp',nt('onbNotifyHelp'));txt('#onbNotifyLabel',nt('onbNotifyLabel'));for(let i=1;i<=4;i++)txt('#onbStep'+i,step(i));btn('#onbBack',nt('onbBack'));btn('#onbNext',nt('onbNext'));btn('#onbStart',nt('onbStart'))}
 let onbStep=0,onb={language:null,temp:4,warn:3,notify:false};
 function showOnbStep(i){onbStep=Math.max(0,Math.min(4,i));$$('#onboardingDialog .onboard-step').forEach((s,j)=>s.classList.toggle('active',j===onbStep));$('#onbBack').hidden=onbStep===0;$('#onbNext').hidden=onbStep===4;$('#onbStart').hidden=onbStep!==4;$$('.onboard-langs button').forEach(b=>b.classList.toggle('active',(onb.language||state.settings.language)===b.dataset.lang));$('#onbTempRange').value=onb.temp;$('#onbTempOut').textContent=onb.temp+'°C';$('#onbWarnRange').value=onb.warn;$('#onbWarnOut').textContent=`${onb.warn} ${onb.warn===1?t('day'):t('days')}`;$('#onbNotify').checked=onb.notify}
@@ -346,16 +390,8 @@ function bindFeatures(){
   $('#actorInput')?.addEventListener('change',e=>{state.settings.actor=e.target.value.trim().slice(0,20);save().then(()=>{renderActivity();toast(t('saved'))})});
   bindOnboarding();
 
-  // Auto-start camera when scan view becomes active
-  $$('[data-view="scan"]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      setTimeout(() => {
-        if (!scanning && $('#scanView')?.classList.contains('active')) {
-          startBarcodeScan();
-        }
-      }, 150);
-    });
-  });
+  // Auto-start camera when scan view becomes active — REMOVED
+  // User must tap the barcode button explicitly for a cleaner UX
 }
 const baseApplyLanguageFeatures=applyLanguage;
 applyLanguage=function(){baseApplyLanguageFeatures();if(!state)return;txt('.activity-card .card-title .eyebrow',nt('activityEyebrow'));txt('.activity-card .card-title h2',nt('activityTitle'));txt('.activity-card .card-title>div>p:last-child',nt('activityLead'));$$('.shop-tab').forEach((e,i)=>e.textContent=[nt('listTab'),nt('planTab')][i]);txt('.plan-week-head',nt('planWeek'));txt('.plan-list-head',nt('planToBuy'));txt('#planHelp',nt('planDayPick'));btn('#planAddAll',nt('planAddAll'));renderActivity();renderPlan();updateScanUI()};

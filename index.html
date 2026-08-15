@@ -107,12 +107,23 @@
           <section class="scan-actions-panel">
             <div class="privacy-line"><svg><use href="#i-shield"/></svg><span>Photo stays on this device</span></div>
             <h2>How would you like to add it?</h2>
-            <div class="capture-actions">
-              <label class="capture-button"><span><svg><use href="#i-camera"/></svg></span><b>Camera</b><small>Take a new photo</small><input id="cameraInput" type="file" accept="image/*" capture="environment" hidden></label>
-              <label class="capture-button"><span><svg><use href="#i-upload"/></svg></span><b>Gallery</b><small>Choose an existing image</small><input id="fileInput" type="file" accept="image/*" hidden></label>
-            </div>
-            <button class="secondary-button wide barcode-button" id="barcodeButton" type="button"><svg><use href="#i-scan"/></svg><span>Scan barcode</span></button>
+
+            <!-- PRIMARY: Barcode scan via live camera -->
+            <button class="barcode-scan-big" id="barcodeButton" type="button">
+              <span class="barcode-scan-icon"><svg><use href="#i-scan"/></svg></span>
+              <span class="barcode-scan-text">
+                <b id="barcodeBtnLabel">Scan barcode</b>
+                <small id="barcodeBtnSub">Point camera at the barcode — auto-detects name &amp; date</small>
+              </span>
+            </button>
             <p class="barcode-note" id="barcodeNote" hidden></p>
+
+            <!-- SECONDARY: photo / gallery / manual -->
+            <div class="scan-divider"><span id="scanOrLabel">or add without barcode</span></div>
+            <div class="capture-actions">
+              <label class="capture-button"><span><svg><use href="#i-camera"/></svg></span><b id="captureCamLabel">Camera</b><small id="captureCamSub">Take a photo</small><input id="cameraInput" type="file" accept="image/*" capture="environment" hidden></label>
+              <label class="capture-button"><span><svg><use href="#i-upload"/></svg></span><b id="captureGalLabel">Gallery</b><small id="captureGalSub">Choose an image</small><input id="fileInput" type="file" accept="image/*" hidden></label>
+            </div>
             <button class="secondary-button wide manual-button" data-add><svg><use href="#i-edit"/></svg>Enter details manually</button>
             <p class="honest-copy"><b>No automatic recognition.</b> Svalna works fully offline, so you always confirm the product name and date.</p>
           </section>
@@ -324,6 +335,6 @@
   <script src="assets/vendor/firebase-firestore-compat.js"></script>
   <script src="assets/vendor/zxing.js"></script>
   <script src="cloud-sync.js?v=7"></script>
-  <script src="app.js?v=29"></script>
+  <script src="app.js?v=30"></script>
 </body>
 </html>
