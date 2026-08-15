@@ -9,7 +9,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="assets/icons/icon-180.png">
-  <link rel="stylesheet" href="styles.css?v=23">
+  <link rel="stylesheet" href="styles.css?v=24">
 </head>
 <body>
   <svg class="svg-defs" aria-hidden="true">
@@ -164,6 +164,7 @@
             <section class="settings-card compact-card setting-row"><div class="setting-icon teal"><svg><use href="#i-bell"/></svg></div><div><h2>Notifications</h2><p id="notificationText">Allow notifications from the browser.</p></div><button class="secondary-button" id="notificationButton">Enable</button></section>
             <section class="settings-card compact-card setting-row"><div class="setting-icon sky"><svg><use href="#i-settings"/></svg></div><div><h2 id="languageHeading">Language</h2><p id="languageText">Choose the language used in Svalna.</p></div><select id="languageSelect" aria-label="Language"><option value="en">English</option><option value="sv">Svenska</option><option value="es">Español</option><option value="tr">Türkçe</option></select></section>
 <section class="settings-card compact-card setting-row"><div class="setting-icon sky"><svg><use href="#i-box"/></svg></div><div><h2 id="themeHeading">Theme</h2><p id="themeText">Choose light or dark appearance.</p></div><select id="themeSelect" aria-label="Theme"><option value="light">Light</option><option value="dark">Dark</option><option value="system">System</option></select></section>
+            <section class="settings-card compact-card setting-row" id="installCard" hidden><div class="setting-icon sky"><svg><use href="#i-home"/></svg></div><div><h2>Install app</h2><p>Add Svalna to your home screen for quick access.</p><span class="ios-install-hint" id="iosInstallHint" hidden></span></div><button class="secondary-button" id="installBtnCard" type="button">Install</button></section>
             <section class="settings-card data-card settings-columns"><div><p class="eyebrow">Offline & private</p><h2>Your data</h2><p>Everything stays on this device. Export a backup before changing phones.</p><div class="button-stack"><button class="secondary-button" id="exportData"><svg><use href="#i-share"/></svg>Export backup</button><label class="secondary-button file-button"><svg><use href="#i-upload"/></svg>Import backup<input id="settingsImport" type="file" accept="application/json" hidden></label><button class="danger-button" id="resetData"><svg><use href="#i-trash"/></svg>Reset demo data</button></div></div><div class="privacy-panel"><svg><use href="#i-shield"/></svg><p class="eyebrow">Offline & private</p><h2>Your food list never leaves your phone.</h2><p>Svalna uses no AI, analytics or account. Notifications while the app is fully closed cannot be guaranteed by every mobile browser.</p></div></section>
           </div>
         </div>
@@ -187,11 +188,16 @@
 
   <dialog id="detailDialog" class="sheet"><article class="sheet-card detail-card"><header><div><p class="eyebrow">In your fridge</p><h2 id="detailTitle"></h2></div><button class="icon-button" data-close-detail aria-label="Close"><svg><use href="#i-close"/></svg></button></header><div id="detailContent"></div><footer><button class="text-button" id="shopFromDetail"><svg><use href="#i-box"/></svg>To list</button><button class="danger-button" id="deleteItem"><svg><use href="#i-trash"/></svg>Remove</button><button class="secondary-button" id="editItem"><svg><use href="#i-edit"/></svg>Edit</button><button class="primary-button" id="consumeItem"><svg><use href="#i-check"/></svg>Mark used</button></footer></article></dialog>
   <dialog id="confirmDialog" class="confirm-dialog"><form method="dialog"><div class="confirm-icon"><svg><use href="#i-trash"/></svg></div><h2>Reset everything?</h2><p>Your items and settings will be replaced with demo data. This cannot be undone.</p><div><button value="cancel" class="secondary-button">Keep my data</button><button value="confirm" class="danger-button">Yes, reset</button></div></form></dialog>
+  <div id="installBanner" class="install-banner" hidden>
+    <div class="install-banner-icon"><svg><use href="#i-home"/></svg></div>
+    <div class="install-banner-copy"><h3>Install Svalna as an app</h3><p>Add Svalna to your home screen — it works offline and opens like a real app.</p><span class="ios-install-hint" id="iosBannerHint" hidden></span></div>
+    <div class="install-banner-actions"><button class="primary-button" id="installBtn" type="button">Install</button><button class="text-button" id="installLater" type="button">Not now</button></div>
+  </div>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script src="assets/vendor/firebase-app-compat.js"></script>
   <script src="assets/vendor/firebase-auth-compat.js"></script>
   <script src="assets/vendor/firebase-firestore-compat.js"></script>
   <script src="cloud-sync.js?v=5"></script>
-  <script src="app.js?v=24"></script>
+  <script src="app.js?v=25"></script>
 </body>
 </html>
