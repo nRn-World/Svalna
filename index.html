@@ -8,7 +8,8 @@
   <title>Svalna</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="styles.css?v=22">
+  <link rel="apple-touch-icon" href="assets/icons/icon-180.png">
+  <link rel="stylesheet" href="styles.css?v=23">
 </head>
 <body>
   <svg class="svg-defs" aria-hidden="true">
@@ -38,6 +39,7 @@
       <div class="nav-links">
         <button class="nav-item active" data-view="home"><svg><use href="#i-home"/></svg><span>Home</span></button>
         <button class="nav-item" data-view="scan"><svg><use href="#i-scan"/></svg><span>Scan</span></button>
+        <button class="nav-item" data-view="shopping"><svg><use href="#i-box"/></svg><span>List</span></button>
         <button class="nav-item" data-view="settings"><svg><use href="#i-settings"/></svg><span>Settings</span></button>
       </div>
       <div class="privacy-stamp"><svg><use href="#i-shield"/></svg><p class="local-note">Stored safely on this device.</p></div>
@@ -71,6 +73,11 @@
           </section>
         </div>
 
+        <div class="home-strip">
+          <section class="stats-card"><p class="eyebrow">This week</p><div class="stats-rows"><div><b id="statsUsed">0</b><span id="statsUsedLabel">used</span></div><i></i><div><b id="statsWasted">0</b><span id="statsWastedLabel">wasted</span></div></div></section>
+          <section class="ideas-card"><p class="eyebrow">Less waste</p><h3>Quick ideas</h3><div id="ideasTags"></div></section>
+        </div>
+
         <section class="inventory-section reveal">
           <div class="section-heading"><div><p class="eyebrow">Your fridge</p><h2>Everything in the fridge</h2></div><span id="itemTotal" class="item-total"></span></div>
           <div class="inventory-tools">
@@ -101,6 +108,25 @@
             </div>
             <button class="secondary-button wide manual-button" data-add><svg><use href="#i-edit"/></svg>Enter details manually</button>
             <p class="honest-copy"><b>No automatic recognition.</b> Svalna works fully offline, so you always confirm the product name and date.</p>
+          </section>
+        </div>
+        <section class="recent-panel" id="recentPanel" hidden>
+          <div class="recent-head"><div><h3>Buy again</h3><p>Your recent items — one tap to add.</p></div></div>
+          <div id="recentChips" class="recent-chips"></div>
+        </section>
+      </section>
+
+      <section id="shoppingView" class="view" aria-labelledby="shopTitle">
+        <header class="simple-header"><p class="eyebrow">Shopping list</p><h1 id="shopTitle">Shopping list</h1><p>Things to pick up on your next trip — with smart suggestions from the fridge.</p></header>
+        <div class="shopping-layout">
+          <section class="shopping-card">
+            <div class="section-heading"><div><h2 class="shop-suggest-head">From the fridge</h2></div><span id="shopTotal" class="item-total"></span></div>
+            <div id="shopSuggest"></div>
+          </section>
+          <section class="shopping-card">
+            <div class="section-heading"><div><h2 class="shop-list-head">Shopping list</h2></div><button class="text-button" id="shopClear" hidden>Clear done</button></div>
+            <div class="shop-add-row"><input id="shopAddName" placeholder="Add an item…" aria-label="Add an item"><button class="secondary-button" id="shopAddBtn" type="button">Add</button></div>
+            <div id="shopRows"></div>
           </section>
         </div>
       </section>
@@ -137,14 +163,14 @@
             <section class="settings-card compact-card setting-row"><div class="setting-icon apricot"><svg><use href="#i-bell"/></svg></div><div><h2>Warn in advance</h2><p>Items turn yellow when they reach this threshold.</p></div><div class="range-control mini"><output id="warningOutput">3 days</output><input id="warningRange" type="range" min="2" max="7" step="1" value="3" aria-label="Warning threshold"></div></section>
             <section class="settings-card compact-card setting-row"><div class="setting-icon teal"><svg><use href="#i-bell"/></svg></div><div><h2>Notifications</h2><p id="notificationText">Allow notifications from the browser.</p></div><button class="secondary-button" id="notificationButton">Enable</button></section>
             <section class="settings-card compact-card setting-row"><div class="setting-icon sky"><svg><use href="#i-settings"/></svg></div><div><h2 id="languageHeading">Language</h2><p id="languageText">Choose the language used in Svalna.</p></div><select id="languageSelect" aria-label="Language"><option value="en">English</option><option value="sv">Svenska</option><option value="es">Español</option><option value="tr">Türkçe</option></select></section>
-<section class="settings-card compact-card setting-row"><div class="setting-icon sky"><svg><use href="#i-box"/></svg></div><div><h2 id="themeHeading">Theme</h2><p id="themeText">Choose light or dark appearance.</p></div><select id="themeSelect" aria-label="Theme"><option value="light">Light</option><option value="dark">Dark</option></select></section>
+<section class="settings-card compact-card setting-row"><div class="setting-icon sky"><svg><use href="#i-box"/></svg></div><div><h2 id="themeHeading">Theme</h2><p id="themeText">Choose light or dark appearance.</p></div><select id="themeSelect" aria-label="Theme"><option value="light">Light</option><option value="dark">Dark</option><option value="system">System</option></select></section>
             <section class="settings-card data-card settings-columns"><div><p class="eyebrow">Offline & private</p><h2>Your data</h2><p>Everything stays on this device. Export a backup before changing phones.</p><div class="button-stack"><button class="secondary-button" id="exportData"><svg><use href="#i-share"/></svg>Export backup</button><label class="secondary-button file-button"><svg><use href="#i-upload"/></svg>Import backup<input id="settingsImport" type="file" accept="application/json" hidden></label><button class="danger-button" id="resetData"><svg><use href="#i-trash"/></svg>Reset demo data</button></div></div><div class="privacy-panel"><svg><use href="#i-shield"/></svg><p class="eyebrow">Offline & private</p><h2>Your food list never leaves your phone.</h2><p>Svalna uses no AI, analytics or account. Notifications while the app is fully closed cannot be guaranteed by every mobile browser.</p></div></section>
           </div>
         </div>
       </section>
     </main>
 
-    <nav class="bottom-nav" aria-label="Primary navigation"><button class="nav-item active" data-view="home"><svg><use href="#i-home"/></svg><span>Home</span></button><button class="nav-item scan-tab" data-view="scan"><div class="scan-tab-icon"><svg><use href="#i-scan"/></svg></div><span>Scan</span></button><button class="nav-item" data-view="settings"><svg><use href="#i-settings"/></svg><span>Settings</span></button></nav>
+    <nav class="bottom-nav" aria-label="Primary navigation"><button class="nav-item active" data-view="home"><svg><use href="#i-home"/></svg><span>Home</span></button><button class="nav-item scan-tab" data-view="scan"><div class="scan-tab-icon"><svg><use href="#i-scan"/></svg></div><span>Scan</span></button><button class="nav-item" data-view="shopping"><svg><use href="#i-box"/></svg><span>List</span></button><button class="nav-item" data-view="settings"><svg><use href="#i-settings"/></svg><span>Settings</span></button></nav>
   </div>
 
   <dialog id="itemDialog" class="sheet"><form method="dialog" class="sheet-card" id="itemForm"><header><div><p class="eyebrow" id="formEyebrow">New in the fridge</p><h2 id="formTitle">Add item</h2></div><button class="icon-button" value="cancel" aria-label="Close"><svg><use href="#i-close"/></svg></button></header>
@@ -159,13 +185,13 @@
     <footer><button class="secondary-button" value="cancel">Cancel</button><button class="primary-button" type="submit" value="default"><svg><use href="#i-check"/></svg>Save item</button></footer>
   </form></dialog>
 
-  <dialog id="detailDialog" class="sheet"><article class="sheet-card detail-card"><header><div><p class="eyebrow">In your fridge</p><h2 id="detailTitle"></h2></div><button class="icon-button" data-close-detail aria-label="Close"><svg><use href="#i-close"/></svg></button></header><div id="detailContent"></div><footer><button class="danger-button" id="deleteItem"><svg><use href="#i-trash"/></svg>Remove</button><button class="secondary-button" id="editItem"><svg><use href="#i-edit"/></svg>Edit</button><button class="primary-button" id="consumeItem"><svg><use href="#i-check"/></svg>Mark used</button></footer></article></dialog>
+  <dialog id="detailDialog" class="sheet"><article class="sheet-card detail-card"><header><div><p class="eyebrow">In your fridge</p><h2 id="detailTitle"></h2></div><button class="icon-button" data-close-detail aria-label="Close"><svg><use href="#i-close"/></svg></button></header><div id="detailContent"></div><footer><button class="text-button" id="shopFromDetail"><svg><use href="#i-box"/></svg>To list</button><button class="danger-button" id="deleteItem"><svg><use href="#i-trash"/></svg>Remove</button><button class="secondary-button" id="editItem"><svg><use href="#i-edit"/></svg>Edit</button><button class="primary-button" id="consumeItem"><svg><use href="#i-check"/></svg>Mark used</button></footer></article></dialog>
   <dialog id="confirmDialog" class="confirm-dialog"><form method="dialog"><div class="confirm-icon"><svg><use href="#i-trash"/></svg></div><h2>Reset everything?</h2><p>Your items and settings will be replaced with demo data. This cannot be undone.</p><div><button value="cancel" class="secondary-button">Keep my data</button><button value="confirm" class="danger-button">Yes, reset</button></div></form></dialog>
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script src="assets/vendor/firebase-app-compat.js"></script>
   <script src="assets/vendor/firebase-auth-compat.js"></script>
   <script src="assets/vendor/firebase-firestore-compat.js"></script>
   <script src="cloud-sync.js?v=2"></script>
-  <script src="app.js?v=20"></script>
+  <script src="app.js?v=21"></script>
 </body>
 </html>
