@@ -4,7 +4,7 @@
 
 Svalna is a progressive web app (PWA) that helps households track fridge contents, reduce food waste, and stay organised. Everything runs locally on the device. No account, no analytics, no server required — with optional live sync via a private household code.
 
-![Home](../Screenshots/Home.png)
+![Home](Screenshots/Home.png)
 
 ---
 
@@ -58,7 +58,7 @@ Svalna is a progressive web app (PWA) that helps households track fridge content
 
 | Home | Scan | Shopping list | Stats | Settings |
 |------|------|---------------|-------|----------|
-| ![Home](../Screenshots/Home.png) | ![Scan](../Screenshots/Scan.png) | ![Shopping list](../Screenshots/Shopping%20list.png) | ![Stats](../Screenshots/Stats.png) | ![Settings](../Screenshots/Settings.png) |
+| <img src="Screenshots/Home.png" width="160"> | <img src="Screenshots/Scan.png" width="160"> | <img src="Screenshots/Shopping-list.png" width="160"> | <img src="Screenshots/Stats.png" width="160"> | <img src="Screenshots/Settings.png" width="160"> |
 
 ---
 
