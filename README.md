@@ -146,3 +146,9 @@ Rules are defined in `firestore.rules`. Households are readable and writable by 
 ## License
 
 MIT
+
+---
+
+☕ **Support development**: [Buy me a coffee 💜](https://ko-fi.com/nrnworld)
+
+Created by ❤️ © nRn World
